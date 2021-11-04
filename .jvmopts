@@ -1,0 +1,7 @@
+# Add jvm parameters
+-Xmx1048M
+-Xss4M
+-XX:ReservedCodeCacheSize=128m
+
+# Add additional jvm parameters
+#-Dkey=val

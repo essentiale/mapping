@@ -1,0 +1,28 @@
+package org.essential.mapping.auto
+
+/**
+ * @author Konstantin Volchenko
+ */
+trait AllowEmptyOptionalMappingOption
+object AllowEmptyOptionalMappingOption extends AllowEmptyOptionalMappingOption
+trait AllowedEmptyOptionalMapping {
+  implicit val allowEmptyOptionalMappingOption: AllowEmptyOptionalMappingOption = AllowEmptyOptionalMappingOption
+}
+
+trait AllowEmptyDefaultsMappingOption
+object AllowEmptyDefaultsMappingOption extends AllowEmptyDefaultsMappingOption
+trait AllowedEmptyDefaultsMapping {
+  implicit val allowEmptyDefaultsMappingOption: AllowEmptyDefaultsMappingOption = AllowEmptyDefaultsMappingOption
+}
+
+trait AllowImplicitConversionsMappingOption
+object AllowImplicitConversionsMappingOption extends AllowImplicitConversionsMappingOption
+trait AllowedImplicitConversionsMapping {
+  implicit val allowImplicitConversionsMappingOption: AllowImplicitConversionsMappingOption = AllowImplicitConversionsMappingOption
+}
+
+trait DisableImplicitMappingsMappingOption
+object DisableImplicitMappingsMappingOption extends DisableImplicitMappingsMappingOption
+trait DisabledImplicitMappingsMapping {
+  implicit val disableImplicitMappingsMappingOption: DisableImplicitMappingsMappingOption = DisableImplicitMappingsMappingOption
+}
