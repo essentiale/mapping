@@ -1,2 +1,2 @@
-# org.essential.mapping
+# essentiale.mapping
 Scala library for mapping case classes
