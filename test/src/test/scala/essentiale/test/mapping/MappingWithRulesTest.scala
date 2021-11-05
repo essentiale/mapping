@@ -1,7 +1,7 @@
-package org.essential.test.mapping
+package essentiale.test.mapping
 
-import org.essential.mapping.Mapping
-import org.essential.mapping.auto._
+import essentiale.mapping.Mapping
+import essentiale.mapping.auto._
 import org.scalatest._
 import org.scalatest.flatspec.AnyFlatSpecLike
 import org.scalatest.matchers.should.Matchers
@@ -9,9 +9,7 @@ import org.scalatest.matchers.should.Matchers
 /**
  * @author Konstantin Volchenko
  */
-class MappingWithRulesTest extends AnyFlatSpecLike
-  with BeforeAndAfter
-  with BeforeAndAfterAll with Matchers {
+class MappingWithRulesTest extends AnyFlatSpecLike with BeforeAndAfter with BeforeAndAfterAll with Matchers {
 
   behavior of "Generating mapper with rules"
 
@@ -33,7 +31,7 @@ class MappingWithRulesTest extends AnyFlatSpecLike
 
     val mapper: Mapping[Source, Target] = new AutoMapping[Source, Target] {
       val rules: Source => Target = build(
-        mapping(_.a)(_.c+2),
+        mapping(_.a)(_.c + 2),
         mapping(_.b)(_ => "value")
       )
     }
@@ -71,7 +69,6 @@ class MappingWithRulesTest extends AnyFlatSpecLike
     case class Source(a: Int)
     case class Target(a: Int, b: String, c: Boolean)
 
-
     """val mapper: Mapping[Source, Target] = new AutoMapping[Source, Target] {
       val rules: Source => Target = build(
         mapping(_.b)(_ => "value")
@@ -91,7 +88,6 @@ class MappingWithRulesTest extends AnyFlatSpecLike
     case class Source(a: Int)
     case class Target(a: Int, b: String)
 
-
     """val mapper: Mapping[Source, Target] = new AutoMapping[Source, Target] {
       val rules: Source => Target = build(
         mapping(_.b)(_ => "value")
@@ -110,7 +106,6 @@ class MappingWithRulesTest extends AnyFlatSpecLike
   it should "not generate mapper with incompatible field types" in {
     case class Source(a: Int)
     case class Target(a: Int, b: String)
-
 
     """val mapper: Mapping[Source, Target] = new AutoMapping[Source, Target] {
       val rules: Source => Target = build(
@@ -212,7 +207,7 @@ class MappingWithRulesTest extends AnyFlatSpecLike
         mapping(_.b)(_.bb)
       )
     }
-    mapper.map(Source("Hello",8)) shouldBe Target(5, "Hello", 8)
+    mapper.map(Source("Hello", 8)) shouldBe Target(5, "Hello", 8)
   }
 
   it should "map with absent field with default value if allowed via trait" in {
@@ -276,7 +271,7 @@ class MappingWithRulesTest extends AnyFlatSpecLike
         mapping(_.d)(_.k)
       )
     }
-    mapper.map(Source("Hello",5)) shouldBe Target(None, "Hello", None, 5)
+    mapper.map(Source("Hello", 5)) shouldBe Target(None, "Hello", None, 5)
   }
 
   it should "prefer default value over Option when both allowed" in {
@@ -322,7 +317,7 @@ class MappingWithRulesTest extends AnyFlatSpecLike
     case class Target(a: To, b: String)
 
     implicit def convertFromDef(from: FromDef): To = To(from.i)
-    implicit def convertFromFunc: FromFunc => To = source => To(source.j)
+    implicit def convertFromFunc: FromFunc => To   = source => To(source.j)
 
     // Just work around unused implicit warning
     val r1: To = FromDef(2)
@@ -355,7 +350,7 @@ class MappingWithRulesTest extends AnyFlatSpecLike
 
     case class Target(a: SubTarget, b: String)
 
-    implicit def convertFromDef(src: SubSource): SubTarget = SubTarget(src.i)
+    implicit def convertFromDef(src: SubSource): SubTarget  = SubTarget(src.i)
     implicit val opt: AllowImplicitConversionsMappingOption = AllowImplicitConversionsMappingOption
 
     val mapper: Mapping[Source, Target] = new AutoMapping[Source, Target] {
@@ -374,7 +369,7 @@ class MappingWithRulesTest extends AnyFlatSpecLike
 
     case class Target(a: SubTarget, b: String)
 
-    implicit val convertFromDef: SubSource => SubTarget = src => SubTarget(src.i)
+    implicit val convertFromDef: SubSource => SubTarget     = src => SubTarget(src.i)
     implicit val opt: AllowImplicitConversionsMappingOption = AllowImplicitConversionsMappingOption
 
     val mapper: Mapping[Source, Target] = new AutoMapping[Source, Target] {
@@ -447,12 +442,12 @@ class MappingWithRulesTest extends AnyFlatSpecLike
     // Workaround unused implicit warning
     subMapping.map(SubSource(5)) shouldBe SubTarget(5)
 
-    """val mapper: Mapping[IncorrectSource, Target] = new AutoMapping[IncorrectSource, Target] with org.essential.mapping.auto.DisabledImplicitMappingsMapping {
+    """val mapper: Mapping[IncorrectSource, Target] = new AutoMapping[IncorrectSource, Target] with essentiale.mapping.auto.DisabledImplicitMappingsMapping {
             val rules: IncorrectSource => Target = build(
               mapping(_.b)(_.d)
             )
           }""" shouldNot compile
-    """val mapper: Mapping[CorrectSource, Target] = new AutoMapping[CorrectSource, Target] with org.essential.mapping.auto.DisabledImplicitMappingsMapping {
+    """val mapper: Mapping[CorrectSource, Target] = new AutoMapping[CorrectSource, Target] with essentiale.mapping.auto.DisabledImplicitMappingsMapping {
             val rules: CorrectSource => Target = build(
               mapping(_.b)(_.d)
             )
@@ -485,9 +480,9 @@ class MappingWithRulesTest extends AnyFlatSpecLike
 
     case class Target(a: SubTarget, b: String)
 
-    implicit val subMapping: Mapping[SubSource, SubTarget] = source => SubTarget(source.i+10)
-    implicit val subConversion: SubSource => SubTarget = source => SubTarget(source.i)
-    implicit def subConvert(src: SubSource): SubTarget = SubTarget(src.i)
+    implicit val subMapping: Mapping[SubSource, SubTarget] = source => SubTarget(source.i + 10)
+    implicit val subConversion: SubSource => SubTarget     = source => SubTarget(source.i)
+    implicit def subConvert(src: SubSource): SubTarget     = SubTarget(src.i)
 
     implicit val opt: AllowImplicitConversionsMappingOption = AllowImplicitConversionsMappingOption
 

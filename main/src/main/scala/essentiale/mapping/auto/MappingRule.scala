@@ -1,4 +1,4 @@
-package org.essential.mapping.auto
+package essentiale.mapping.auto
 
 /**
  * @author Konstantin Volchenko

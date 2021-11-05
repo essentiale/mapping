@@ -1,6 +1,7 @@
-package org.essential.mapping.auto
+package essentiale.mapping.auto
 
-import org.essential.mapping.{GeneratedMapping, GeneratedRecursiveMapping, Mapping}
+import essentiale.mapping.{GeneratedMapping, GeneratedRecursiveMapping, Mapping}
+
 import scala.collection.mutable
 import scala.reflect.macros.blackbox
 
@@ -116,7 +117,7 @@ object AutoMappingMacro {
               } else {
                 mappings.put(name, getter.asInstanceOf[c.Tree])
               }
-            case _ =>
+            case _                 =>
               c.abort(rule.tree.pos, "For building mapping rule you should specify target field as _.someField")
           }
         case _                                        =>
@@ -145,12 +146,13 @@ object AutoMappingMacro {
   )(mappings: Map[String, c.Tree], sourceVariableName: c.Tree, recursive: Boolean): c.Tree = {
     import c.universe._
     val unusedRules = mutable.Set.from(mappings.keySet)
-    val options = readMappingOptions(c)
-    val mapping = buildClassMapping(c)(weakTypeOf[S], weakTypeOf[T], mappings, sourceVariableName, options, recursive, Seq.empty, unusedRules)
+    val options     = readMappingOptions(c)
+    val mapping     =
+      buildClassMapping(c)(weakTypeOf[S], weakTypeOf[T], mappings, sourceVariableName, options, recursive, Seq.empty, unusedRules)
     for (rule <- unusedRules) {
       c.warning(mappings(rule).pos, s"Mapping rule for $rule field is not used.")
     }
-    val result  = q"""
+    val result = q"""
         ${buildMacroImplicitUsage(c)(options)}
         $mapping
        """

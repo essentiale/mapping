@@ -1,7 +1,7 @@
-package org.essential.test.mapping
+package essentiale.test.mapping
 
-import org.essential.mapping.Mapping
-import org.essential.mapping.auto._
+import essentiale.mapping.Mapping
+import essentiale.mapping.auto._
 import org.scalatest._
 import org.scalatest.flatspec.AnyFlatSpecLike
 import org.scalatest.matchers.should.Matchers
@@ -9,9 +9,9 @@ import org.scalatest.matchers.should.Matchers
 /**
  * @author Konstantin Volchenko
  */
-class GeneratedMappingTest extends AnyFlatSpecLike with BeforeAndAfter with BeforeAndAfterAll with Matchers {
+class InlineMappingTest extends AnyFlatSpecLike with BeforeAndAfter with BeforeAndAfterAll with Matchers {
 
-  behavior of "Default auto mapping"
+  behavior of "Default inline auto mapping"
 
   it should "map empty case class" in {
 
@@ -19,8 +19,7 @@ class GeneratedMappingTest extends AnyFlatSpecLike with BeforeAndAfter with Befo
 
     case class Target()
 
-    val mapping = AutoMapping.generate[Source, Target]
-    mapping.map(Source()) shouldBe Target()
+    AutoMapping.map(Source()).to[Target] shouldBe Target()
   }
 
   it should "map one field case class" in {
@@ -29,8 +28,7 @@ class GeneratedMappingTest extends AnyFlatSpecLike with BeforeAndAfter with Befo
 
     case class Target(a: Int)
 
-    val mapping = AutoMapping.generate[Source, Target]
-    mapping.map(Source(4)) shouldBe Target(4)
+    AutoMapping.map(Source(4)).to[Target] shouldBe Target(4)
   }
 
   it should "map two field case class" in {
@@ -39,8 +37,7 @@ class GeneratedMappingTest extends AnyFlatSpecLike with BeforeAndAfter with Befo
 
     case class Target(a: Int, b: String)
 
-    val mapping = AutoMapping.generate[Source, Target]
-    mapping.map(Source(2, "str", c = true)) shouldBe Target(2, "str")
+    AutoMapping.map(Source(2, "str", c = true)).to[Target] shouldBe Target(2, "str")
   }
 
   it should "map two field case class in mixed order" in {
@@ -49,8 +46,7 @@ class GeneratedMappingTest extends AnyFlatSpecLike with BeforeAndAfter with Befo
 
     case class Target(a: Int, b: String)
 
-    val mapping = AutoMapping.generate[Source, Target]
-    mapping.map(Source(c = true, "str", 2)) shouldBe Target(2, "str")
+    AutoMapping.map(Source(c = true, "str", 2)).to[Target] shouldBe Target(2, "str")
   }
 
   it should "map assignable but not equal types" in {
@@ -63,8 +59,7 @@ class GeneratedMappingTest extends AnyFlatSpecLike with BeforeAndAfter with Befo
 
     case class Target(person: Base, b: String)
 
-    val mapping = AutoMapping.generate[Source, Target]
-    mapping.map(Source(Child(8), "str")) shouldBe Target(Child(8), "str")
+    AutoMapping.map(Source(Child(8), "str")).to[Target] shouldBe Target(Child(8), "str")
   }
 
   it should "not compile when field is missing" in {
@@ -75,8 +70,8 @@ class GeneratedMappingTest extends AnyFlatSpecLike with BeforeAndAfter with Befo
 
     case class Target(a: Int, b: String)
 
-    "val mapping = AutoMapping.generate[IncompleteSource, Target]" shouldNot compile
-    "val mapping = AutoMapping.generate[CompleteSource, Target]" should compile
+    """AutoMapping.map(IncompleteSource("str")).to[Target]""" shouldNot compile
+    """AutoMapping.map(CompleteSource(2, "str")).to[Target]""" should compile
   }
 
   it should "not compile when field is incompatible" in {
@@ -87,8 +82,8 @@ class GeneratedMappingTest extends AnyFlatSpecLike with BeforeAndAfter with Befo
 
     case class Target(a: Int, b: String)
 
-    "val mapping = AutoMapping.generate[IncorrectSource, Target]" shouldNot compile
-    "val mapping = AutoMapping.generate[CorrectSource, Target]" should compile
+    """AutoMapping.map(IncorrectSource(true, "str")).to[Target]""" shouldNot compile
+    """AutoMapping.map(CorrectSource(2, "str")).to[Target]""" should compile
   }
 
   behavior of "Default values"
@@ -100,8 +95,8 @@ class GeneratedMappingTest extends AnyFlatSpecLike with BeforeAndAfter with Befo
 
     case class Target(a: Int = 5, b: String)
 
-    "val mapping = AutoMapping.generate[IncorrectSource, Target]" shouldNot compile
-    "val mapping = AutoMapping.generate[CorrectSource, Target]" should compile
+    """AutoMapping.map(IncorrectSource("str")).to[Target]""" shouldNot compile
+    """AutoMapping.map(CorrectSource(2, "str")).to[Target]""" should compile
   }
 
   it should "map with absent field with default value if allowed" in {
@@ -111,8 +106,7 @@ class GeneratedMappingTest extends AnyFlatSpecLike with BeforeAndAfter with Befo
 
     implicit val opt: AllowEmptyDefaultsMappingOption = AllowEmptyDefaultsMappingOption
 
-    val mapping = AutoMapping.generate[Source, Target]
-    mapping.map(Source("Hello")) shouldBe Target(5, "Hello")
+    AutoMapping.map(Source("Hello")).to[Target] shouldBe Target(5, "Hello")
   }
 
   it should "map with several absent fields with default value if allowed" in {
@@ -122,8 +116,7 @@ class GeneratedMappingTest extends AnyFlatSpecLike with BeforeAndAfter with Befo
 
     implicit val opt: AllowEmptyDefaultsMappingOption = AllowEmptyDefaultsMappingOption
 
-    val mapping = AutoMapping.generate[Source, Target]
-    mapping.map(Source("Hello", 8)) shouldBe Target(5, "Hello", 8)
+    AutoMapping.map(Source("Hello", 8)).to[Target] shouldBe Target(5, "Hello", 8)
   }
 
   behavior of "Option fields"
@@ -135,8 +128,8 @@ class GeneratedMappingTest extends AnyFlatSpecLike with BeforeAndAfter with Befo
 
     case class Target(a: Option[Int], b: String)
 
-    "val mapping = AutoMapping.generate[IncorrectSource, Target]" shouldNot compile
-    "val mapping = AutoMapping.generate[CorrectSource, Target]" should compile
+    """AutoMapping.map(IncorrectSource("str")).to[Target]""" shouldNot compile
+    """AutoMapping.map(IncorrectSource(Some(5), "str")).to[Target]""" shouldNot compile
   }
 
   it should "map with absent Option field if allowed" in {
@@ -146,8 +139,7 @@ class GeneratedMappingTest extends AnyFlatSpecLike with BeforeAndAfter with Befo
 
     implicit val opt: AllowEmptyOptionalMappingOption = AllowEmptyOptionalMappingOption
 
-    val mapping = AutoMapping.generate[Source, Target]
-    mapping.map(Source("Hello")) shouldBe Target(None, "Hello")
+    AutoMapping.map(Source("Hello")).to[Target] shouldBe Target(None, "Hello")
   }
 
   it should "map with several absent Option field if allowed" in {
@@ -157,8 +149,7 @@ class GeneratedMappingTest extends AnyFlatSpecLike with BeforeAndAfter with Befo
 
     implicit val opt: AllowEmptyOptionalMappingOption = AllowEmptyOptionalMappingOption
 
-    val mapping = AutoMapping.generate[Source, Target]
-    mapping.map(Source("Hello", 5)) shouldBe Target(None, "Hello", None, 5)
+    AutoMapping.map(Source("Hello", 5)).to[Target] shouldBe Target(None, "Hello", None, 5)
   }
 
   it should "prefer default value over Option when both allowed" in {
@@ -169,8 +160,7 @@ class GeneratedMappingTest extends AnyFlatSpecLike with BeforeAndAfter with Befo
     implicit val opt1: AllowEmptyOptionalMappingOption = AllowEmptyOptionalMappingOption
     implicit val opt2: AllowEmptyDefaultsMappingOption = AllowEmptyDefaultsMappingOption
 
-    val mapping = AutoMapping.generate[Source, Target]
-    mapping.map(Source("Hello")) shouldBe Target(None, "Hello", c = true, Some("Good"))
+    AutoMapping.map(Source("Hello")).to[Target] shouldBe Target(None, "Hello", c = true, Some("Good"))
   }
 
   behavior of "implicit conversions"
@@ -195,9 +185,9 @@ class GeneratedMappingTest extends AnyFlatSpecLike with BeforeAndAfter with Befo
     val r2: To = FromFunc(2)
     r2 shouldBe To(2)
 
-    "val mapping = AutoMapping.generate[IncorrectSource1, Target]" shouldNot compile
-    "val mapping = AutoMapping.generate[IncorrectSource2, Target]" shouldNot compile
-    "val mapping = AutoMapping.generate[CorrectSource, Target]" should compile
+    """AutoMapping.map(IncorrectSource1(FromDef(2), "str")).to[Target]""" shouldNot compile
+    """AutoMapping.map(IncorrectSource2(FromFunc(2), "str")).to[Target]""" shouldNot compile
+    """AutoMapping.map(CorrectSource(To(2), "str")).to[Target]""" should compile
   }
 
   it should "compile when field is assignable via implicit def conversion if allowed" in {
@@ -211,8 +201,7 @@ class GeneratedMappingTest extends AnyFlatSpecLike with BeforeAndAfter with Befo
     implicit def convertFromDef(src: SubSource): SubTarget  = SubTarget(src.i)
     implicit val opt: AllowImplicitConversionsMappingOption = AllowImplicitConversionsMappingOption
 
-    val mapping = AutoMapping.generate[Source, Target]
-    mapping.map(Source(SubSource(6), "str")) shouldBe Target(SubTarget(6), "str")
+    AutoMapping.map(Source(SubSource(6), "str")).to[Target] shouldBe Target(SubTarget(6), "str")
   }
 
   it should "compile when field is assignable via implicit func conversion if allowed" in {
@@ -226,8 +215,7 @@ class GeneratedMappingTest extends AnyFlatSpecLike with BeforeAndAfter with Befo
     implicit val convertFromDef: SubSource => SubTarget     = src => SubTarget(src.i)
     implicit val opt: AllowImplicitConversionsMappingOption = AllowImplicitConversionsMappingOption
 
-    val mapping = AutoMapping.generate[Source, Target]
-    mapping.map(Source(SubSource(6), "str")) shouldBe Target(SubTarget(6), "str")
+    AutoMapping.map(Source(SubSource(6), "str")).to[Target] shouldBe Target(SubTarget(6), "str")
   }
 
   behavior of "Mapping implicits"
@@ -248,8 +236,8 @@ class GeneratedMappingTest extends AnyFlatSpecLike with BeforeAndAfter with Befo
     opt shouldBe DisableImplicitMappingsMappingOption
     subMapping.map(SubSource(5)) shouldBe SubTarget(5)
 
-    "val mapping = AutoMapping.generate[IncorrectSource, Target]" shouldNot compile
-    "val mapping = AutoMapping.generate[CorrectSource, Target]" should compile
+    """AutoMapping.map(IncorrectSource(SubSource(3), "str")).to[Target]""" shouldNot compile
+    """AutoMapping.map(CorrectSource(SubTarget(3), "str")).to[Target]""" should compile
   }
 
   it should "compile when field is assignable via implicit Mapping if allowed" in {
@@ -262,8 +250,7 @@ class GeneratedMappingTest extends AnyFlatSpecLike with BeforeAndAfter with Befo
 
     implicit val subMapping: Mapping[SubSource, SubTarget] = source => SubTarget(source.i)
 
-    val mapping = AutoMapping.generate[Source, Target]
-    mapping.map(Source(SubSource(2), "str")) shouldBe Target(SubTarget(2), "str")
+    AutoMapping.map(Source(SubSource(2), "str")).to[Target] shouldBe Target(SubTarget(2), "str")
   }
 
   it should "prefer implicit Mapping over implicit conversion when both allowed" in {
@@ -284,8 +271,7 @@ class GeneratedMappingTest extends AnyFlatSpecLike with BeforeAndAfter with Befo
     subConversion(SubSource(5)) shouldBe SubTarget(5)
     subConvert(SubSource(5)) shouldBe SubTarget(5)
 
-    val mapping = AutoMapping.generate[Source, Target]
-    mapping.map(Source(SubSource(2), "str")) shouldBe Target(SubTarget(12), "str")
+    AutoMapping.map(Source(SubSource(2), "str")).to[Target] shouldBe Target(SubTarget(12), "str")
   }
 
 }

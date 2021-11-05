@@ -1,18 +1,15 @@
-package org.essential.test.mapping
+package essentiale.test.mapping
 
-import org.essential.mapping.Mapping
-import org.essential.mapping.auto._
+import essentiale.mapping.Mapping
+import essentiale.mapping.auto._
 import org.scalatest._
 import org.scalatest.flatspec.AnyFlatSpecLike
 import org.scalatest.matchers.should.Matchers
 
-
 /**
  * @author Konstantin Volchenko
  */
-class RecursiveMappingTest extends AnyFlatSpecLike
-  with BeforeAndAfter
-  with BeforeAndAfterAll with Matchers {
+class RecursiveMappingTest extends AnyFlatSpecLike with BeforeAndAfter with BeforeAndAfterAll with Matchers {
 
   behavior of "Recursive generated mapping"
 
@@ -140,8 +137,8 @@ class RecursiveMappingTest extends AnyFlatSpecLike
       )
     }
 
-    mapper1.map(Source(2, SubSource("Bad",7))) shouldBe Target(2, SubTarget(7, "Good"))
-    mapper2.map(Source(2, SubSource("Bad",7))) shouldBe Target(2, SubTarget(7, "Bad"))
+    mapper1.map(Source(2, SubSource("Bad", 7))) shouldBe Target(2, SubTarget(7, "Good"))
+    mapper2.map(Source(2, SubSource("Bad", 7))) shouldBe Target(2, SubTarget(7, "Bad"))
 
   }
 
