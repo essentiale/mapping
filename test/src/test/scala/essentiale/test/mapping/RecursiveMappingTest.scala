@@ -142,4 +142,92 @@ class RecursiveMappingTest extends AnyFlatSpecLike with BeforeAndAfter with Befo
 
   }
 
+  it should "Generate recursive mapping including Option[_]" in {
+    case class Source(a: Int, b: SubSource1, c: Option[SubSource2], d: Boolean)
+    case class Target(c: Option[SubTarget2], a: Int, b: SubTarget1)
+
+    case class SubSource1(x: String, y: Option[Int])
+    case class SubTarget1(y: Option[Int], x: String)
+
+    case class SubSource2(inner: Option[Option[SubSubSource]])
+    case class SubTarget2(inner: Option[Option[SubSubTarget]])
+
+    case class SubSubSource(i: Int)
+    case class SubSubTarget(i: Int)
+
+    val mapping = AutoMapping.generateRecursive[Source, Target]
+    mapping.map(Source(5, SubSource1("str", Some(2)), Some(SubSource2(Some(Some(SubSubSource(9))))), d = true)) shouldBe Target(
+      Some(SubTarget2(Some(Some(SubSubTarget(9))))),
+      5,
+      SubTarget1(Some(2), "str")
+    )
+  }
+
+  it should "Generate recursive mapping including Seq[_]" in {
+    case class Source(a: Int, b: Seq[Int], c: Seq[SubSource1], d: Boolean)
+    case class Target(c: Seq[SubTarget1], a: Int, b: Seq[Int])
+
+    case class SubSource1(x: String, y: Int)
+    case class SubTarget1(y: Int, x: String)
+
+    val mapping = AutoMapping.generateRecursive[Source, Target]
+    mapping.map(Source(5, Seq(2, 3, 4), Seq(SubSource1("str", 2), SubSource1("x", 4)), d = true)) shouldBe Target(
+      Seq(SubTarget1(2, "str"), SubTarget1(4, "x")),
+      5,
+      Seq(2, 3, 4)
+    )
+  }
+
+  it should "Generate recursive mapping including Array[_]" in {
+    case class Source(a: Int, b: Array[Int], c: Array[SubSource1], d: Boolean)
+    case class Target(c: Array[SubTarget1], a: Int, b: Array[Int])
+
+    case class SubSource1(x: String, y: Int)
+    case class SubTarget1(y: Int, x: String)
+
+    val mapping = AutoMapping.generateRecursive[Source, Target]
+    val result  = mapping.map(Source(5, Array(2, 3, 4), Array(SubSource1("str", 2), SubSource1("x", 4)), d = true))
+    result.a shouldBe 5
+    result.b.toSeq shouldBe Seq(2, 3, 4)
+    result.c.toSeq shouldBe Seq(SubTarget1(2, "str"), SubTarget1(4, "x"))
+  }
+
+  it should "Generate recursive mapping including Map[_]" in {
+    case class Source(a: Int, b: Map[Int, SubSource1], c: Map[SubSource1, String], d: Boolean)
+    case class Target(c: Map[SubTarget1, String], a: Int, b: Map[Int, SubTarget1])
+
+    case class SubSource1(x: String, y: Int)
+    case class SubTarget1(y: Int, x: String)
+
+    val mapping = AutoMapping.generateRecursive[Source, Target]
+    mapping.map(
+      Source(5, Map(2 -> SubSource1("a", 0)), Map(SubSource1("str", 2) -> "r", SubSource1("x", 4) -> "t"), d = true)
+    ) shouldBe Target(
+      Map(SubTarget1(2, "str") -> "r", SubTarget1(4, "x") -> "t"),
+      5,
+      Map(2                    -> SubTarget1(0, "a"))
+    )
+  }
+
+  it should "Generate recursive mapping including Either[_]" in {
+    case class Source(a: Int, b: Either[Int, SubSource1], c: Either[SubSource2, SubSource3], d: Boolean)
+    case class Target(c: Either[SubTarget2, SubTarget3], a: Int, b: Either[Int, SubTarget1])
+
+    case class SubSource1(x: String, y: Int)
+    case class SubSource2(x: String, y: Int)
+    case class SubSource3(x: String, y: Int)
+    case class SubTarget1(y: Int, x: String)
+    case class SubTarget2(y: Int, x: String)
+    case class SubTarget3(y: Int, x: String)
+
+    val mapping = AutoMapping.generateRecursive[Source, Target]
+    mapping.map(
+      Source(5, Left(3), Right(SubSource3("str", 2)), d = true)
+    ) shouldBe Target(
+      Right(SubTarget3(2, "str")),
+      5,
+      Left(3)
+    )
+  }
+
 }

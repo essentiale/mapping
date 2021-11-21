@@ -1,6 +1,6 @@
 package essentiale.test.mapping
 
-import essentiale.mapping.{DefaultMappings, Mapping}
+import essentiale.mapping.{DefaultMappingImplicits, Mapping}
 import org.scalatest.flatspec.AnyFlatSpecLike
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll}
@@ -10,7 +10,7 @@ import scala.collection.immutable.TreeMap
 /**
  * @author Konstantin Volchenko
  */
-class DefaultMappingTest extends AnyFlatSpecLike with BeforeAndAfter with BeforeAndAfterAll with Matchers with DefaultMappings {
+class DefaultMappingTest extends AnyFlatSpecLike with BeforeAndAfter with BeforeAndAfterAll with Matchers with DefaultMappingImplicits {
 
   behavior of "Default mappings"
 

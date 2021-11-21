@@ -143,10 +143,10 @@ trait AutoMappingRecursive[S, T] extends Mapping[S, T] with AutoMappingHelper {
 
 trait AutoMappingHelper {
 
-  protected def useAllowEmptyOptionsMappingOption(implicit opt: AllowEmptyOptionalMappingOption): Unit = {}
-  protected def useAllowEmptyDefaultsMappingOption(implicit opt: AllowEmptyDefaultsMappingOption): Unit = {}
-  protected def useAllowImplicitConversionsMappingOption(implicit opt: AllowImplicitConversionsMappingOption): Unit = {}
-  protected def useDisableImplicitMappingsMappingOption(implicit opt: DisableImplicitMappingsMappingOption): Unit = {}
+  protected def useAllowEmptyOptionsMappingOption(implicit opt: AllowEmptyOptionalMappingOption): Boolean              = true
+  protected def useAllowEmptyDefaultsMappingOption(implicit opt: AllowEmptyDefaultsMappingOption): Boolean             = true
+  protected def useAllowImplicitConversionsMappingOption(implicit opt: AllowImplicitConversionsMappingOption): Boolean = true
+  protected def useDisableImplicitMappingsMappingOption(implicit opt: DisableImplicitMappingsMappingOption): Boolean   = true
 
 }
 
