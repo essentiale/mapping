@@ -6,6 +6,8 @@ import org.scalatest._
 import org.scalatest.flatspec.AnyFlatSpecLike
 import org.scalatest.matchers.should.Matchers
 
+import scala.language.implicitConversions
+
 /**
  * @author Konstantin Volchenko
  */

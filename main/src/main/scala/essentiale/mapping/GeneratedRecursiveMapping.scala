@@ -1,6 +1,7 @@
 package essentiale.mapping
 
 import essentiale.mapping.auto.AutoMappingMacro
+
 import scala.language.experimental.macros
 
 /**

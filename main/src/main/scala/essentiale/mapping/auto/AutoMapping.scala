@@ -137,7 +137,7 @@ trait AutoMappingRecursive[S, T] extends Mapping[S, T] with AutoMappingHelper {
 
   protected def mapping[V](target: T => V)(source: S => V): MappingRuleAssignment[S, T, V] = MappingRuleAssignment(source)
 
-  protected def build(rules: MappingRule[S, T]*): S => T = macro AutoMappingMacro.buildMappingRecusiveWithRules[S, T]
+  protected def build(rules: MappingRule[S, T]*): S => T = macro AutoMappingMacro.buildMappingRecursiveWithRules[S, T]
 
 }
 

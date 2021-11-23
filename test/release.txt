@@ -1,0 +1,2 @@
+essentiale-mapping-main / publishSigned
+https://central.sonatype.org/publish/release/

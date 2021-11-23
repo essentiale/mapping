@@ -1,7 +1,7 @@
 name := "mapping"
 
 val projectOrganization = "io.github.essentiale"
-val projectVersion      = "1.0.3"
+val projectVersion      = "1.0.4"
 val projectHomepage     = Some(url("https://github.com/essentiale/mapping"))
 val projectScmInfo      = Some(ScmInfo(url("https://github.com/essentiale/mapping"), "git@github.com:essentiale/mapping.git"))
 val projectDevelopers   = List(Developer("Volchik", "Volchik", "1barboss7@gmail.com", url("https://github.com/essentiale")))
